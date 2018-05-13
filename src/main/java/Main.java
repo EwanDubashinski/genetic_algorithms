@@ -5,41 +5,74 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYShapeRenderer;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.util.ArrayList;
+
 public class Main {
-    private static final double MIN = -10.0;
-    private static final double MAX = 10.0;
+    private static final int POPULATION_SIZE = 10;
 
     public static void main(String[] args) {
-        drawGraphics();
-    }
 
-    private static void drawGraphics() {
-        XYSeries series = new XYSeries("(1.85-х)*cos(3.5x-0.5)");
 
-        for(double i = MIN; i <= MAX; i+=0.1){
-            series.add(i, (1.85-i)* Math.cos(3.5*i-0.5));
+
+        ArrayList<Chromosome> genePool = new ArrayList<>();
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+            genePool.add(new Chromosome(Chromosome.CHROMOSOME_SIZE));
+        }
+
+        //genePool.forEach(System.out::println);
+        for (Chromosome chromosome : genePool) {
+            chromosome.setFuncValue(mainFuncResult(chromosome.getRealValue()));
+        }
+
+        double populationSumm = 0;
+        for (Chromosome chromosome : genePool) {
+            populationSumm += chromosome.getFuncValue();
+        }
+
+        for (Chromosome chromosome : genePool) {
+            chromosome.setRatio(chromosome.getFuncValue()/populationSumm);
+            chromosome.setResult(chromosome.getRatio() * POPULATION_SIZE);
+        }
+
+        ArrayList<Chromosome> newGenePool = new ArrayList<>();
+
+        for (Chromosome chromosome : genePool) {
+            long chromosomeCount = Math.round(chromosome.getResult());
+            for (int i = 0; i < chromosomeCount; i++) {
+                newGenePool.add(new Chromosome(chromosome));
+            }
         }
 
 
-        XYSeriesCollection xyDataset = new XYSeriesCollection();
 
+
+        drawGraphics(newGenePool);
+    }
+
+    private static double mainFuncResult(double value) {
+        return (1.85 - value) * Math.cos(3.5 * value-0.5);
+    }
+    private static void drawGraphics(ArrayList<Chromosome> genePool) {
+        XYSeries series = new XYSeries("(1.85-х)*cos(3.5x-0.5)");
+
+        for(double i = Chromosome.MIN; i <= Chromosome.MAX; i+=0.1){
+            series.add(i, mainFuncResult(i));
+        }
+
+        XYSeriesCollection xyDataset = new XYSeriesCollection();
 
         XYSeries series2 = new XYSeries("population");
 
-        series2.add(1,1);
+        for (Chromosome chromosome : genePool) {
+            series2.add(chromosome.getRealValue(), chromosome.getFuncValue());
+        }
 
         xyDataset.addSeries(series);
         xyDataset.addSeries(series2);
-
-
-
 
         JFreeChart chart = ChartFactory
                 .createXYLineChart("y = (1.85-х)*cos(3.5x-0.5)", "x", "y",
