@@ -9,7 +9,16 @@ public class Chromosome {
     private double realValue;
     private double funcValue;
     private double ratio;
-    private double result;
+
+    public double getPositiveValue() {
+        return positiveValue;
+    }
+
+    public void setPositiveValue(double positiveValue) {
+        this.positiveValue = positiveValue;
+    }
+
+    private double positiveValue;
 
 
     public Chromosome(int size) {
@@ -82,11 +91,5 @@ public class Chromosome {
         this.ratio = ratio;
     }
 
-    public double getResult() {
-        return result;
-    }
 
-    public void setResult(double result) {
-        this.result = result;
-    }
 }
