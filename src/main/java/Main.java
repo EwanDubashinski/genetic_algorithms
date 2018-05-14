@@ -12,20 +12,22 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.util.ArrayList;
 
 public class Main {
+
     private static final int POPULATION_SIZE = 10;
 
     public static void main(String[] args) {
 
-
-
-        ArrayList<Chromosome> genePool = new ArrayList<>();
-        ArrayList<Chromosome> newGenePool = null;
+        ArrayList<Chromosome> genePool;
+        ArrayList<Chromosome> newGenePool = new ArrayList<>();
         for (int i = 0; i < POPULATION_SIZE; i++) {
-            genePool.add(new Chromosome(Chromosome.CHROMOSOME_SIZE));
+            newGenePool.add(new Chromosome(Chromosome.CHROMOSOME_SIZE));
         }
 
         //genePool.forEach(System.out::println);
-        for (int i = 0; i < 100; i++) {
+
+
+        for (int i = 0; i < 20; i++) {
+            genePool = newGenePool;
             newGenePool = reproduction(genePool);
         }
 
