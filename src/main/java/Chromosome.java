@@ -1,14 +1,16 @@
 public class Chromosome {
     public static final double MIN = -10.0;
     public static final double MAX = 10.0;
-    public static final int CHROMOSOME_SIZE = 15;
+    public static final int CHROMOSOME_SIZE = 63;
 
 
     private String binaryValue;
-    private int decimalValue;
+    private long decimalValue;
     private double realValue;
     private double funcValue;
     private double ratio;
+    private double positiveValue;
+
 
     public double getPositiveValue() {
         return positiveValue;
@@ -17,8 +19,6 @@ public class Chromosome {
     public void setPositiveValue(double positiveValue) {
         this.positiveValue = positiveValue;
     }
-
-    private double positiveValue;
 
 
     public Chromosome(int size) {
@@ -43,11 +43,11 @@ public class Chromosome {
         return result.toString();
     }
 
-    private static int getDecimal(String binary) {
-        return Integer.parseInt(binary, 2);
+    private static long getDecimal(String binary) {
+        return Long.parseLong(binary, 2);
     }
 
-    private static double getDecimalValue(int partNum) {
+    private static double getDecimalValue(long partNum) {
         return MIN + partNum * ((MAX-MIN)/(Math.pow(2, CHROMOSOME_SIZE)-1));
     }
 
@@ -58,10 +58,12 @@ public class Chromosome {
     public void setBinaryValue(String binaryValue) {
         this.binaryValue = binaryValue;
         decimalValue = getDecimal(binaryValue);
+        //System.out.println("decimalValue" + decimalValue);
         realValue = getDecimalValue(decimalValue);
+        //System.out.println("realValue" + realValue);
     }
 
-    public int getDecimalValue() {
+    public long getDecimalValue() {
         return decimalValue;
     }
 
