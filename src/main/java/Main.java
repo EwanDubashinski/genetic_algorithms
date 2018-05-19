@@ -10,6 +10,9 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class Main {
 
@@ -25,13 +28,54 @@ public class Main {
 
         //genePool.forEach(System.out::println);
 
-
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 2; i++) {
             genePool = newGenePool;
             newGenePool = reproduction(genePool);
+            newGenePool = crossingOver(newGenePool);
         }
 
         drawGraphics(newGenePool);
+    }
+
+    private static ArrayList<Chromosome> crossingOver(ArrayList<Chromosome> genePool) {
+        ArrayList<Chromosome> newGenePool = new ArrayList<>(genePool);
+
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < newGenePool.size(); i++) {
+            indexes.add(i);
+        }
+
+        Collections.shuffle(indexes);
+
+//        System.out.println("newGenePool" + newGenePool.size());
+//        System.out.println("newGenePool" + newGenePool);
+//        System.out.println("indexes" + indexes.size());
+//        System.out.println("indexes" + indexes);
+
+        for (int i = 0; i < newGenePool.size(); i += 2) {
+            System.out.println("i = " + i);
+            int firstIndex = indexes.get(i);
+            int secondIndex = indexes.get(i+1);
+            System.out.println("firstIndex="+firstIndex);
+            System.out.println("secondIndex="+secondIndex);
+            crossPair(newGenePool.get(firstIndex), newGenePool.get(secondIndex));
+        }
+        return newGenePool;
+    }
+
+    private static void crossPair(Chromosome chromosomeA, Chromosome chromosomeB) {
+        //gen k
+        int cutPosition = getRandom(1, Chromosome.CHROMOSOME_SIZE - 2);
+        //System.out.println("cutp " + cutPosition);
+        String newChromosomeA = chromosomeA.getBinaryValue().substring(0, cutPosition).concat(chromosomeB.getBinaryValue().substring(cutPosition));
+        String newChromosomeB = chromosomeB.getBinaryValue().substring(0, cutPosition).concat(chromosomeA.getBinaryValue().substring(cutPosition));
+        chromosomeA.setBinaryValue(newChromosomeA);
+        chromosomeB.setBinaryValue(newChromosomeB);
+    }
+
+    private static int getRandom(int min, int max) {
+        max -= min;
+        return (int) (Math.random() * ++max) + min;
     }
 
     private static ArrayList<Chromosome> reproduction(ArrayList<Chromosome> genePool) {
@@ -45,12 +89,12 @@ public class Main {
             //populationMiddle += chromosome.getFuncValue();
             populationMin = chromosome.getFuncValue() < populationMin ? chromosome.getFuncValue() : populationMin;
         }
-        System.out.println("min=" + populationMin);
+        //System.out.println("min=" + populationMin);
         double delta = Math.abs(populationMin) + 1;
         double populationMiddle = 0;
         for (Chromosome chromosome : genePool) {
             chromosome.setPositiveValue(chromosome.getFuncValue() + delta);
-            System.out.println("chromosome.getPositiveValue()=" + chromosome.getPositiveValue());
+          //  System.out.println("chromosome.getPositiveValue()=" + chromosome.getPositiveValue());
             populationMiddle += chromosome.getPositiveValue();
         }
         populationMiddle /= POPULATION_SIZE;
@@ -63,11 +107,12 @@ public class Main {
 
         for (Chromosome chromosome : genePool) {
             long chromosomeCount = Math.round(chromosome.getRatio());
-            System.out.println("chromosomeCount=" + chromosomeCount + " chromosome.getResult()"+chromosome.getRatio());
+            System.out.println("chromosomeCount=" + chromosomeCount + " chromosome.getResult()="+chromosome.getRatio());
             for (int i = 0; i < chromosomeCount; i++) {
                 newGenePool.add(new Chromosome(chromosome));
             }
         }
+        System.out.println("new POOL: " + newGenePool.size());
         return newGenePool;
     }
 

@@ -57,6 +57,8 @@ public class Chromosome {
 
     public void setBinaryValue(String binaryValue) {
         this.binaryValue = binaryValue;
+        decimalValue = getDecimal(binaryValue);
+        realValue = getDecimalValue(decimalValue);
     }
 
     public int getDecimalValue() {
