@@ -1,6 +1,7 @@
+package ru.chufeng.guap.ga.simple;
+
 import javax.swing.*;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -33,7 +34,6 @@ public class Main {
 
     public static void main(String[] args) {
         stepsCnt = getStepsCnt();
-        System.out.println("stepsCnt" + stepsCnt);
 
         ArrayList<Chromosome> genePool;
         ArrayList<Chromosome> newGenePool = new ArrayList<>();
@@ -48,7 +48,6 @@ public class Main {
             newGenePool = reproduction(genePool, i);
             newGenePool = crossingOver(newGenePool);
             mutation(newGenePool, i);
-
         }
 
         drawGraphics(newGenePool);
@@ -113,7 +112,7 @@ public class Main {
         for (Chromosome chromosome : genePool) {
             chromosome.setRatio((chromosome.getPositiveValue()/populationSum) * POPULATION_SIZE);
         }
-
+        //return roulette(genePool);
         return (((double)ITERATIONS / ((double)iteration + 1.0)) > 1.01) ? roulette(genePool) : selection(genePool);
     }
 
@@ -130,7 +129,12 @@ public class Main {
 
         XYSeriesCollection xyDataset = new XYSeriesCollection();
 
-        XYSeries series2 = new XYSeries("population: " + genePool.size());
+        double maximum = genePool.get(0).getRealValue();
+        for (Chromosome chromosome : genePool) {
+            maximum = (chromosome.getRealValue() > maximum) ? chromosome.getRealValue() : maximum;
+        }
+
+        XYSeries series2 = new XYSeries("maximum: " + maximum);
 
         for (Chromosome chromosome : genePool) {
             series2.add(chromosome.getRealValue(), chromosome.getFuncValue());

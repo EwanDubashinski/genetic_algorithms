@@ -1,9 +1,11 @@
+package ru.chufeng.guap.ga.simple;
+
 import java.util.Comparator;
 
-public class Chromosome {
-    public static final double MIN = -10.0;
-    public static final double MAX = 10.0;
-    public static final int CHROMOSOME_SIZE = 63;
+ class Chromosome {
+    static final double MIN = -10.0;
+    static final double MAX = 10.0;
+    static final int CHROMOSOME_SIZE = 63;
 
 
     private String binaryValue;
@@ -18,22 +20,22 @@ public class Chromosome {
         return Double.toString(this.getPositiveValue());
     }
 
-    public double getPositiveValue() {
+    double getPositiveValue() {
         return positiveValue;
     }
 
-    public void setPositiveValue(double positiveValue) {
+    void setPositiveValue(double positiveValue) {
         this.positiveValue = positiveValue;
     }
 
 
-    public Chromosome(int size) {
+    Chromosome(int size) {
         binaryValue = getNewChromosome(size);
         decimalValue = getDecimal(binaryValue);
         realValue = getDecimalValue(decimalValue);
     }
 
-    public Chromosome(Chromosome chromosome) {
+    Chromosome(Chromosome chromosome) {
         this.binaryValue = chromosome.binaryValue;
         this.decimalValue = chromosome.decimalValue;
         this.realValue = chromosome.realValue;
@@ -57,52 +59,50 @@ public class Chromosome {
         return MIN + partNum * ((MAX-MIN)/(Math.pow(2, CHROMOSOME_SIZE)-1));
     }
 
-    public String getBinaryValue() {
+    String getBinaryValue() {
         return binaryValue;
     }
 
-    public void setBinaryValue(String binaryValue) {
+    void setBinaryValue(String binaryValue) {
         this.binaryValue = binaryValue;
         decimalValue = getDecimal(binaryValue);
-        //System.out.println("decimalValue" + decimalValue);
         realValue = getDecimalValue(decimalValue);
-        //System.out.println("realValue" + realValue);
     }
 
-    public long getDecimalValue() {
+    long getDecimalValue() {
         return decimalValue;
     }
 
-    public void setDecimalValue(int decimalValue) {
+    void setDecimalValue(int decimalValue) {
         this.decimalValue = decimalValue;
     }
 
-    public double getRealValue() {
+    double getRealValue() {
         return realValue;
     }
 
-    public void setRealValue(double realValue) {
+    void setRealValue(double realValue) {
         this.realValue = realValue;
     }
 
-    public double getFuncValue() {
+    double getFuncValue() {
         return funcValue;
     }
 
-    public void setFuncValue(double funcValue) {
+    void setFuncValue(double funcValue) {
         this.funcValue = funcValue;
     }
 
-    public double getRatio() {
+    double getRatio() {
         return ratio;
     }
 
-    public void setRatio(double ratio) {
+    void setRatio(double ratio) {
         this.ratio = ratio;
     }
 
 
-    public static Comparator<Chromosome> getCompByName()
+    static Comparator<Chromosome> getCompByName()
     {
         Comparator<Chromosome> comp = new Comparator<Chromosome>(){
             @Override
