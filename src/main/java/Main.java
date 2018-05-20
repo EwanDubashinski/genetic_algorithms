@@ -10,16 +10,31 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
 public class Main {
 
-    private static final int POPULATION_SIZE = 300;
+    private static final int POPULATION_SIZE = 100;
+    private static final int ITERATIONS = 100;
+    private static int stepsCnt = 0;
+    private static int stepsAdditional = 0;
+
+
+    private static int getStepsCnt() {
+        for (int i = POPULATION_SIZE; i > 0 ; i--) {
+            stepsAdditional = POPULATION_SIZE - i;
+            double j = Math.sqrt(0.25 + i * 2);
+            if ((j - 0.5) == Math.round(j - 0.5)) {
+                return (int) (j - 0.5);
+            }
+        }
+        return 0;
+        //return (int) (-0.5 + Math.sqrt(0.25 + POPULATION_SIZE * 2));
+    }
 
     public static void main(String[] args) {
+        stepsCnt = getStepsCnt();
+        System.out.println("stepsCnt" + stepsCnt);
 
         ArrayList<Chromosome> genePool;
         ArrayList<Chromosome> newGenePool = new ArrayList<>();
@@ -29,11 +44,14 @@ public class Main {
 
         //genePool.forEach(System.out::println);
 
-        for (int i = 0; i < 250; i++) {
+        for (int i = 0; i < ITERATIONS; i++) {
             genePool = newGenePool;
-            newGenePool = reproduction(genePool);
+            newGenePool = reproduction(genePool, i);
+            //newGenePool = selection(newGenePool);
             newGenePool = crossingOver(newGenePool);
             mutation(newGenePool, i);
+            //System.out.println("++++++++++++" + newGenePool.get(1).getPositiveValue());
+
         }
 
         drawGraphics(newGenePool);
@@ -78,7 +96,7 @@ public class Main {
         return (int) (Math.random() * ++max) + min;
     }
 
-    private static ArrayList<Chromosome> reproduction(ArrayList<Chromosome> genePool) {
+    private static ArrayList<Chromosome> reproduction(ArrayList<Chromosome> genePool, int iteration) {
         for (Chromosome chromosome : genePool) {
             chromosome.setFuncValue(mainFuncResult(chromosome.getRealValue()));
         }
@@ -92,15 +110,19 @@ public class Main {
         double delta = Math.abs(populationMin) + 1;
         double populationSum = 0;
         for (Chromosome chromosome : genePool) {
+            //System.out.println(chromosome.getFuncValue() + " " + delta);
             chromosome.setPositiveValue(chromosome.getFuncValue() + delta);
+            //System.out.println("chromosome.getPositiveValue() = " + chromosome.getPositiveValue());
             populationSum += chromosome.getPositiveValue();
         }
 
         for (Chromosome chromosome : genePool) {
             chromosome.setRatio((chromosome.getPositiveValue()/populationSum) * POPULATION_SIZE);
         }
+        //System.out.println((double)ITERATIONS / ((double)iteration + 1));
 
-        return roulette(genePool);
+        return (((double)ITERATIONS / ((double)iteration + 1.0)) > 1.01) ? roulette(genePool) : selection(genePool);
+        //return roulette(genePool);
     }
 
     private static double mainFuncResult(double value) {
@@ -202,5 +224,23 @@ public class Main {
         }
 
 
+    }
+
+    private static ArrayList<Chromosome> selection (ArrayList<Chromosome> genePool) {
+        genePool.sort(Chromosome.getCompByName().reversed());
+        //genePool.forEach(System.out::println);
+        ArrayList<Chromosome> newGenePool = new ArrayList<>();
+        int chromosomeIndex = 0;
+        for (int i = stepsCnt; i > 0; i--) {
+            for (int j = 0; j < i; j++) {
+                newGenePool.add(genePool.get(chromosomeIndex));
+            }
+            chromosomeIndex++;
+        }
+        for (int i = 0; i < stepsAdditional; i++) {
+            newGenePool.add(genePool.get(chromosomeIndex + i + 1));
+        }
+        //newGenePool.forEach(System.out::println);
+        return newGenePool;
     }
 }

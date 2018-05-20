@@ -1,3 +1,5 @@
+import java.util.Comparator;
+
 public class Chromosome {
     public static final double MIN = -10.0;
     public static final double MAX = 10.0;
@@ -11,6 +13,10 @@ public class Chromosome {
     private double ratio;
     private double positiveValue;
 
+    @Override
+    public String toString() {
+        return Double.toString(this.getPositiveValue());
+    }
 
     public double getPositiveValue() {
         return positiveValue;
@@ -96,4 +102,15 @@ public class Chromosome {
     }
 
 
+    public static Comparator<Chromosome> getCompByName()
+    {
+        Comparator<Chromosome> comp = new Comparator<Chromosome>(){
+            @Override
+            public int compare(Chromosome s1, Chromosome s2)
+            {
+                return Double.compare(s1.positiveValue, s2.positiveValue);
+            }
+        };
+        return comp;
+    }
 }
