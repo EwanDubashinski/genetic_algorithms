@@ -29,7 +29,6 @@ public class Main {
             }
         }
         return 0;
-        //return (int) (-0.5 + Math.sqrt(0.25 + POPULATION_SIZE * 2));
     }
 
     public static void main(String[] args) {
@@ -47,10 +46,8 @@ public class Main {
         for (int i = 0; i < ITERATIONS; i++) {
             genePool = newGenePool;
             newGenePool = reproduction(genePool, i);
-            //newGenePool = selection(newGenePool);
             newGenePool = crossingOver(newGenePool);
             mutation(newGenePool, i);
-            //System.out.println("++++++++++++" + newGenePool.get(1).getPositiveValue());
 
         }
 
@@ -104,25 +101,20 @@ public class Main {
         double populationMin = 0;
 
         for (Chromosome chromosome : genePool) {
-            //populationSum += chromosome.getFuncValue();
             populationMin = chromosome.getFuncValue() < populationMin ? chromosome.getFuncValue() : populationMin;
         }
         double delta = Math.abs(populationMin) + 1;
         double populationSum = 0;
         for (Chromosome chromosome : genePool) {
-            //System.out.println(chromosome.getFuncValue() + " " + delta);
             chromosome.setPositiveValue(chromosome.getFuncValue() + delta);
-            //System.out.println("chromosome.getPositiveValue() = " + chromosome.getPositiveValue());
             populationSum += chromosome.getPositiveValue();
         }
 
         for (Chromosome chromosome : genePool) {
             chromosome.setRatio((chromosome.getPositiveValue()/populationSum) * POPULATION_SIZE);
         }
-        //System.out.println((double)ITERATIONS / ((double)iteration + 1));
 
         return (((double)ITERATIONS / ((double)iteration + 1.0)) > 1.01) ? roulette(genePool) : selection(genePool);
-        //return roulette(genePool);
     }
 
     private static double mainFuncResult(double value) {
@@ -228,7 +220,6 @@ public class Main {
 
     private static ArrayList<Chromosome> selection (ArrayList<Chromosome> genePool) {
         genePool.sort(Chromosome.getCompByName().reversed());
-        //genePool.forEach(System.out::println);
         ArrayList<Chromosome> newGenePool = new ArrayList<>();
         int chromosomeIndex = 0;
         for (int i = stepsCnt; i > 0; i--) {
@@ -240,7 +231,6 @@ public class Main {
         for (int i = 0; i < stepsAdditional; i++) {
             newGenePool.add(genePool.get(chromosomeIndex + i + 1));
         }
-        //newGenePool.forEach(System.out::println);
         return newGenePool;
     }
 }
