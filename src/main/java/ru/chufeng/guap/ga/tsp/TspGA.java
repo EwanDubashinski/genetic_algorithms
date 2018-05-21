@@ -1,27 +1,68 @@
 package ru.chufeng.guap.ga.tsp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TspGA {
-    public static final int POPULATION_COUNT = 3;
+    private static final int POPULATION_COUNT = 40;
+    private static final int ITERATIONS_COUNT = 10;
+
     static ArrayList<City> cities = new ArrayList<>();
     static {
         loadData();
     }
     public static void main(String[] args) {
+        ArrayList<ChromosomeRoute> genePool = new ArrayList<>();
 
-        ChromosomeTSP chromosome = new ChromosomeTSP(cities.size());
+        for (int i = 0; i < POPULATION_COUNT; i++) {
+            genePool.add(new ChromosomeRoute(cities.size()));
+        }
         // Fitness function : chromosome.getRouteLength()
-        System.out.println(chromosome.getRouteLength());
-        // Load coordinates to sth
-        // Tournament selection
+
+        for (int i = 0; i < ITERATIONS_COUNT; i++) {
+            //genePool.forEach(System.out::println);
+            // Tournament selection
+            tournament(genePool);
+        }
+        //System.out.println("Finish!");
+        //genePool.forEach(System.out::println);
+
         // Heuristic crossover
         // Impl mutation as switch two random points...
         // Graphic representation
 
     }
 
-    static void loadData(){
+    private static void tournament(ArrayList<ChromosomeRoute> genePool) {
+
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < genePool.size(); i++) {
+            indexes.add(i);
+        }
+
+        Collections.shuffle(indexes);
+
+        for (int i = 0; i < genePool.size(); i += 2) {
+            int firstIndex = indexes.get(i);
+            int secondIndex = indexes.get(i+1);
+            battle(genePool.get(firstIndex), genePool.get(secondIndex));
+        }
+    }
+
+    private static void battle(ChromosomeRoute chromosome1, ChromosomeRoute chromosome2) {
+        //System.out.println("battle     " + chromosome1.toString() + " : " +chromosome2.toString());
+        if (chromosome1.getRouteLength() < chromosome2.getRouteLength()) {
+            chromosome2.copyFrom(chromosome1);
+        } else {
+            chromosome1.copyFrom(chromosome2);
+        }
+        //System.out.println("battle res " + chromosome1.toString() + " : " +chromosome2.toString());
+    }
+
+
+
+
+    private static void loadData(){
 //        cities.add(new City(20833.3333, 17100.0000));
 //        cities.add(new City(20900.0000, 17066.6667));
 //        cities.add(new City(21300.0000, 13016.6667));

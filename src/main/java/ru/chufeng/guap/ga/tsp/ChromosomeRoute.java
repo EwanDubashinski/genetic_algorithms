@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class ChromosomeTSP {
+public class ChromosomeRoute {
     //    Adjacency representation
     private ArrayList<Integer> route;
     private ArrayList<Integer> routeRepresentation;
@@ -14,13 +14,34 @@ public class ChromosomeTSP {
         return routeLength;
     }
 
-    ChromosomeTSP(int size) {
+    @Override
+    public String toString() {
+        StringBuilder routeStr = new StringBuilder();
+        for (int city : route) {
+            routeStr.append(city).append(" ");
+        }
+        return routeStr.toString() + Double.toString(routeLength);
+    }
+
+    ChromosomeRoute(int size) {
         route = getNewRoute(size);
         routeRepresentation = getRouteRepresentation(route);
         routeLength = calcRouteLength();
     }
 
-    ChromosomeTSP(ArrayList<Integer> route) {
+    ChromosomeRoute(ChromosomeRoute chromosome) {
+        this.route = chromosome.route;
+        this.routeRepresentation = chromosome.routeRepresentation;
+        this.routeLength = chromosome.routeLength;
+    }
+
+    void copyFrom(ChromosomeRoute chromosome) {
+        this.route = chromosome.route;
+        this.routeRepresentation = chromosome.routeRepresentation;
+        this.routeLength = chromosome.routeLength;
+    }
+
+    ChromosomeRoute(ArrayList<Integer> route) {
         this.route = route;
         this.routeRepresentation = getRouteRepresentation(route);
         routeLength = calcRouteLength();
